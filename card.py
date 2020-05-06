@@ -21,6 +21,14 @@ class Card:
                7, 8, 9, 10, 11, 12, 13, 1])
 
     def __init__(self, card_mark, card_value):
+        """
+        Parameters
+        ----------
+        card_mark : int
+            カードのマーク（♠︎❤︎♦︎♣️）
+        card_value : int
+            カードの数字
+        """
         self.mark = card_mark
         self.value = card_value
 
