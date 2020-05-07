@@ -37,15 +37,12 @@ class Deck:
             デッキの個数
         """
 
-        self.cards = []
-        for index in range(deck_set_count):
-            # 4つのマーク
-            for mark in range(len(card.Card.MARKS)):
-                # 数字（2から13 + 1の14）
-                for value in range(1, len(card.Card.NUMBERS) + 1):
-                    # cardsに追加
-                    #print(mark, value)
-                    self.cards.append(card.Card(mark, value))
+        # cardsに追加
+        self.cards = [card.Card(mark, value)
+                      for index in range(deck_set_count)
+                      for mark in range(len(card.Card.MARKS))
+                      for value in range(1, len(card.Card.NUMBERS) + 1)]
+
         # デッキをシャッフル
         shuffle(self.cards)
 
@@ -68,8 +65,8 @@ class Deck:
             # カードが0枚の時は何もしない
             return
 
-        for i in range(card_num):
-            self.card_list.append(self.cards.pop())
+        # card_numの回数分カードを引く
+        self.card_list = [self.cards.pop() for index in range(card_num)]
         return self.card_list
 
 
