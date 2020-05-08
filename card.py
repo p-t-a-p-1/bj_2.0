@@ -55,5 +55,6 @@ class Card:
 # 通常 → <__main__.Card object at 0x10c949310>
 # reprメソッド追加 → ♦︎-4
 
-card = Card(2, 12)
-print(card)
+if __name__ == '__main__':
+    card = Card(2, 12)
+    print(card)

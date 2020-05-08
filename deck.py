@@ -46,13 +46,13 @@ class Deck:
         # デッキをシャッフル
         shuffle(self.cards)
 
-    def get_card(self, card_num=1):
+    def draw_card(self, num=1):
         """
         要素を取得しリストから削除
 
         Parameters
         ----------
-        card_num : int, default 1
+        num : int, default 1
             取得するカードの枚数
 
         Examples
@@ -66,10 +66,11 @@ class Deck:
             return
 
         # card_numの回数分カードを引く
-        self.card_list = [self.cards.pop() for index in range(card_num)]
+        self.card_list = [self.cards.pop() for index in range(num)]
         return self.card_list
 
 
-deck = Deck(2)
-print(deck.cards)
-print(deck.get_card(5))
+if __name__ == '__main__':
+    deck = Deck(2)
+    print(deck.cards)
+    print(deck.draw_card(5))
