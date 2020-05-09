@@ -7,8 +7,7 @@ class Player:
     def __init__(self):
         self.win_count = 0
         self.hands = []
-        self.card_total_list_main = []
-        self.card_total_score_sub = []
+        self.card_curennt_score = 0
 
     def draw_card(self, num=1):
         """
@@ -63,25 +62,50 @@ class Player:
             card_value = 10
         else:
             card_value = int(card_number)
-        self.card_total_list_main.append(card_value)
         return card_value
 
-    # def calc_total_score(self):
-        # return
+    def calc_curennt_score(self, current_hands):
+        for card in current_hands:
+            card_value = self.rank_to_value(str(card))
+            self.card_curennt_score += card_value
+
+    def want_draw(self):
+        return self.card_curennt_score < 17
 
 
 if __name__ == '__main__':
+    # playerとdealer作成
     player = Player()
     dealer = Player()
 
+    # 山札セット（セット数を決める）
     deck = deck.Deck(1)
 
-    player.draw_card()
-    player.draw_card()
-    dealer.draw_card()
-    dealer.draw_card()
+    # 最初は２枚ずつドロー
+    player.draw_card(2)
+    dealer.draw_card(2)
 
-    # player's hands : [♦︎-J, ♦︎-8]
+    # 初期ドロー時のスコア表示（dealer側の1枚は伏せる）
+    print(f"dealer's hands : [{dealer.hands[0]}, *-*]")
+    print()
     print(f"player's hands : {player.hands}")
-    # dealer's hands : [♣️-5, ♦︎-K]
-    print(f"dealer's hands : {dealer.hands}")
+    player.calc_curennt_score(player.hands)
+    print(f"players's total_socre : {player.card_curennt_score}")
+
+    # playerに hit or stand 決めさせる
+    hit_flg = True
+    while hit_flg is True:
+        hit_or_stand_msg = "\nHit(1) or Stand(2) : "
+        hit_or_stand_res = input(hit_or_stand_msg)
+        if hit_or_stand_res == "1":
+            # hit の場合は1枚ドロー
+            player.draw_card()
+            print(f"dealer's hands : {dealer.hands[0]} , *-*")
+            print(f"players's total_socre : {player.card_curennt_score}")
+            print(f"player draw card is : {player.hands[-1]}")
+            player.calc_curennt_score(player.hands)
+            print(f"players's total_socre : {player.card_curennt_score}")
+        elif hit_or_stand_res == "2":
+            hit_flg = False
+        else:
+            print("ダメです")
