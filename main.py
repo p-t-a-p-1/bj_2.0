@@ -7,6 +7,41 @@ class Player:
         self.hands = []
         self.card_current_score = 0
 
+    def keep_drawing_card(self, deck):
+        """
+        playerに hit or stand 決めさせる
+        （stand で player のターンが終了）
+
+        Parameters
+        ----------
+        deck : deck
+            カードひと組
+        """
+        hit_flg = True
+        while hit_flg is True:
+            hit_or_stand_msg = "\nHit(1) or Stand(2) : "
+            hit_or_stand_res = input(hit_or_stand_msg)
+            if hit_or_stand_res == "1":
+                # hit の場合は1枚ドロー
+                self.draw_card(deck)
+                print(f"\ndealer's hands : {self.hands[0]} , *-*")
+                print(f"players's total_score : {self.card_current_score}")
+                print(f"player draw card is : {self.hands[-1]}")
+                self.calc_current_score(self.hands)
+                print(f"players's total_score : {self.card_current_score}")
+
+                # バーストでplayerターン強制終了
+                if self.is_score_burst(int(self.card_current_score)):
+                    print("player burst!!!")
+                    hit_flg = False
+
+            elif hit_or_stand_res == "2":
+                # standの場合はターン終了
+                hit_flg = False
+            else:
+                # 1, 2以外のコマンドは再度入力させる
+                print("ダメです")
+
     def draw_card(self, deck, num=1):
         """
         カードをデッキからドローし手札に加える
@@ -94,13 +129,19 @@ class Player:
         """
         return total_score > 21
 
-    def want_draw(self):
-        return self.card_current_score < 17
-
 
 class Dealer(Player):
     def __init__(self):
         super().__init__()
+
+    def keep_drawing_card(self, deck):
+        while self.card_current_score < 17:
+            self.draw_card(deck)
+            print(f"dealer draw card is : {self.hands[-1]}")
+            self.calc_current_score(self.hands)
+            print(f"dealer's total_score : {self.card_current_score}")
+            if self.is_score_burst(self.card_current_score):
+                print("dealer burst!!!")
 
 
 def main():
@@ -109,7 +150,7 @@ def main():
     dealer = Dealer()
 
     # 山札セット（セット数を決める）
-    deck = stock.Deck(1)
+    deck = stock.Deck()
     # 最初は２枚ずつドロー
     player.draw_card(deck, 2)
     dealer.draw_card(deck, 2)
@@ -122,30 +163,7 @@ def main():
     print(f"players's total_score : {player.card_current_score}")
 
     # playerに hit or stand 決めさせる（stand で player のターンが終了）
-    hit_flg = True
-    while hit_flg is True:
-        hit_or_stand_msg = "\nHit(1) or Stand(2) : "
-        hit_or_stand_res = input(hit_or_stand_msg)
-        if hit_or_stand_res == "1":
-            # hit の場合は1枚ドロー
-            player.draw_card(deck)
-            print(f"\ndealer's hands : {dealer.hands[0]} , *-*")
-            print(f"players's total_score : {player.card_current_score}")
-            print(f"player draw card is : {player.hands[-1]}")
-            player.calc_current_score(player.hands)
-            print(f"players's total_score : {player.card_current_score}")
-
-            # バーストでplayerターン強制終了
-            if player.is_score_burst(int(player.card_current_score)):
-                print("player burst!!!")
-                hit_flg = False
-
-        elif hit_or_stand_res == "2":
-            # standの場合はターン終了
-            hit_flg = False
-        else:
-            # 1, 2以外のコマンドは再度入力させる
-            print("ダメです")
+    player.keep_drawing_card(deck)
 
     print("\n--result--")
 
@@ -155,13 +173,7 @@ def main():
     print(f"dealer's total_score : {dealer.card_current_score}")
 
     # dealerの手札の合計が17になるまで引く
-    while dealer.card_current_score < 17:
-        dealer.draw_card(deck)
-        print(f"dealer draw card is : {dealer.hands[-1]}")
-        dealer.calc_current_score(dealer.hands)
-        print(f"dealer's total_score : {dealer.card_current_score}")
-        if dealer.is_score_burst(dealer.card_current_score):
-            print("dealer burst!!!")
+    dealer.keep_drawing_card(deck)
 
     # 勝敗判定
     judge_win = ""
@@ -173,7 +185,7 @@ def main():
         player.win_count += 1
     elif player.card_current_score == dealer.card_current_score \
             and player.card_current_score <= 21:
-        judge_win = "draw"
+        judge_win = "---draw---"
     else:
         judge_win = "dealer win!"
         dealer.win_count += 1
