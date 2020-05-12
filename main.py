@@ -2,6 +2,10 @@ import stock
 
 
 class Player:
+    """
+    子（手動で操作できるプレイヤー）
+    """
+
     def __init__(self):
         self.win_count = 0
         self.hands = []
@@ -131,6 +135,10 @@ class Player:
 
 
 class Dealer(Player):
+    """
+    親（自動操作）
+    """
+
     def __init__(self):
         super().__init__()
 
@@ -144,53 +152,91 @@ class Dealer(Player):
                 print("dealer burst!!!")
 
 
-def main():
-    # playerとdealer作成
-    player = Player()
-    dealer = Dealer()
+class Game:
+    """
+    メインゲーム（インスタンス作成時にplayerとdealerインスタンス作成）
 
-    # 山札セット（セット数を決める）
-    deck = stock.Deck()
-    # 最初は２枚ずつドロー
-    player.draw_card(deck, 2)
-    dealer.draw_card(deck, 2)
+    Examples
+    --------
+    >>> game = Game()
+    >>> game.main() # ゲームスタート（下記の初期フェーズが表示）
+    dealer's hands : [❤︎-7, *-*]
 
-    # 初期ドロー時のスコア表示（dealer側の1枚は伏せる）
-    print(f"dealer's hands : [{dealer.hands[0]}, *-*]")
-    print()
-    print(f"player's hands : {player.hands}")
-    player.calc_current_score(player.hands)
-    print(f"players's total_score : {player.card_current_score}")
+    player's hands : [♠︎-9, ♦︎-J]
+    players's total_score : 19
 
-    # playerに hit or stand 決めさせる（stand で player のターンが終了）
-    player.keep_drawing_card(deck)
+    Hit(1) or Stand(2) :
+    """
 
-    print("\n--result--")
+    def __init__(self):
+        # playerとdealer作成
+        self.player = Player()
+        self.dealer = Dealer()
 
-    # dealerの手札オープン
-    print(f"dealer's hands : {dealer.hands}")
-    dealer.calc_current_score(dealer.hands)
-    print(f"dealer's total_score : {dealer.card_current_score}")
+    def judge_winner(self, dealer, player):
+        """
+        勝敗判定
 
-    # dealerの手札の合計が17になるまで引く
-    dealer.keep_drawing_card(deck)
+        Parameters
+        ----------
+        dealer : object
+            親
+        player : object
+            子
+        """
 
-    # 勝敗判定
-    judge_win = ""
-    if dealer.card_current_score < player.card_current_score <= 21:
-        judge_win = "player win!"
-        player.win_count += 1
-    elif player.card_current_score <= 21 < dealer.card_current_score:
-        judge_win = "player win!"
-        player.win_count += 1
-    elif player.card_current_score == dealer.card_current_score \
-            and player.card_current_score <= 21:
-        judge_win = "---draw---"
-    else:
-        judge_win = "dealer win!"
-        dealer.win_count += 1
-    print(f"\n/***********/\n/{judge_win}/\n/***********/")
+        judge_win = ""
+        if dealer.card_current_score < \
+                player.card_current_score <= 21:
+            judge_win = "player win!"
+            player.win_count += 1
+        elif player.card_current_score <= 21 \
+                < dealer.card_current_score:
+            judge_win = "player win!"
+            player.win_count += 1
+        elif player.card_current_score == dealer.card_current_score \
+                and player.card_current_score <= 21:
+            judge_win = "---draw---"
+        else:
+            judge_win = "dealer win!"
+            dealer.win_count += 1
+        print(f"\n/***********/\n/{judge_win}/\n/***********/")
+
+    def main(self):
+        """
+        ゲームスタート
+        """
+
+        # 山札セット（セット数を決める）
+        deck = stock.Deck()
+        # 最初は２枚ずつドロー
+        self.player.draw_card(deck, 2)
+        self.dealer.draw_card(deck, 2)
+
+        # 初期ドロー時のスコア表示（dealer側の1枚は伏せる）
+        print(f"dealer's hands : [{self.dealer.hands[0]}, *-*]")
+        print()
+        print(f"player's hands : {self.player.hands}")
+        self.player.calc_current_score(self.player.hands)
+        print(f"players's total_score : {self.player.card_current_score}")
+
+        # playerに hit or stand 決めさせる（stand で player のターンが終了）
+        self.player.keep_drawing_card(deck)
+
+        print("\n--result--")
+
+        # dealerの手札オープン
+        print(f"dealer's hands : {self.dealer.hands}")
+        self.dealer.calc_current_score(self.dealer.hands)
+        print(f"dealer's total_score : {self.dealer.card_current_score}")
+
+        # dealerの手札の合計が17になるまで引く
+        self.dealer.keep_drawing_card(deck)
+
+        # 勝敗判定
+        self.judge_winner(self.dealer, self.player)
 
 
 if __name__ == '__main__':
-    main()
+    game = Game()
+    game.main()
