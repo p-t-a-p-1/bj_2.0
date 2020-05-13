@@ -2,41 +2,30 @@
 
 ## sample
 ```
-23:12:03 ~/workspace/python/bj_2.0 $ python main.py 
-dealer's hands : [♦︎-6, *-*]
+22:57:56 ~/workspace/python/bj_2.0 $ python main.py 
 
-player's hands : [♣️-2, ♠︎-A]
-players's total_score : 3
+--Game Start--
 
-Hit(1) or Stand(2) :  1
+dealer's hands : [♦︎-Q, *-*]
+player's hands : [♦︎-K, ♠︎-A]
 
-dealer's hands : ♣️-2 , *-*
-players's total_score : 3
-player draw card is : ♣️-3
-players's total_score : 6
+players's total_score : 11, 22        
 
 Hit(1) or Stand(2) : 1
+player draw card is : ♣️-6
+players's total_score : 17, 28
 
-dealer's hands : ♣️-2 , *-*
-players's total_score : 6
-player draw card is : ♠︎-Q
-players's total_score : 16
+Hit(1) or Stand(2) : 2
 
-Hit(1) or Stand(2) : 1
+--Result--
 
-dealer's hands : ♣️-2 , *-*
-players's total_score : 16
-player draw card is : ♣️-Q
-players's total_score : 26
-player burst!!!
-
---result--
-dealer's hands : [♦︎-6, ♣️-7]
-dealer's total_score : 13
-dealer draw card is : ❤︎-6
-dealer's total_score : 19
+dealer's hands : [♦︎-Q, ♦︎-J]
+dealer's total_score : 20
+        
 
 /***********/
 /dealer win!/
 /***********/
+
+--Game End--
 ```
