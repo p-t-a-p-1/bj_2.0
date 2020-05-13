@@ -68,6 +68,9 @@ class Game:
         self.dealer.draw_card(deck, 2)
         # player初期スコア計算
         self.player.calc_current_score(self.player.hands)
+        player_sub_score = ""
+        if self.player.draw_A_flg is True:
+            player_sub_score = f", {self.player.card_current_score_sub}"
 
         # 初期ドロー時のスコア表示（dealer側の1枚は伏せる）
         print("\n--Game Start--\n")
@@ -76,7 +79,7 @@ class Game:
 dealer's hands : [{self.dealer.hands[0]}, *-*]
 player's hands : {self.player.hands}
 
-players's total_score : {self.player.card_current_score}\
+players's total_score : {self.player.card_current_score}{player_sub_score}\
         """
         print(f"{first_msg}")
 

@@ -7,6 +7,8 @@ class Player:
         self.win_count = 0
         self.hands = []
         self.card_current_score = 0
+        self.card_current_score_sub = 0
+        self.draw_A_flg = False
 
     def keep_drawing_card(self, deck):
         """
@@ -25,15 +27,26 @@ class Player:
             if hit_or_stand_res == "1":
                 # hit の場合は1枚ドロー
                 self.draw_card(deck)
-                print(f"\ndealer's hands : {self.hands[0]} , *-*")
-                print(f"players's total_score : {self.card_current_score}")
                 print(f"player draw card is : {self.hands[-1]}")
                 self.calc_current_score(self.hands)
-                print(f"players's total_score : {self.card_current_score}")
+                sub_score = ""
+                if self.draw_A_flg is True:
+                    sub_score = \
+                        f", {self.card_current_score_sub}"
+                print(
+                    f"players's total_score : \
+{self.card_current_score}{sub_score}")
 
                 # バーストでplayerターン強制終了
-                if self.is_score_burst(int(self.card_current_score)):
+                if self.is_score_burst(int(self.card_current_score)) and \
+                    self.is_score_burst(
+                        int(self.card_current_score_sub)):
                     print("player burst!!!")
+                    hit_flg = False
+
+                if self.card_current_score == 21 or \
+                        self.card_current_score_sub == 21:
+                    # 21になった時点で強制終了
                     hit_flg = False
 
             elif hit_or_stand_res == "2":
@@ -110,9 +123,16 @@ class Player:
             現在のスコア
         """
         self.card_current_score = 0
+        self.card_current_score_sub = 0
         for card in current_hands:
             card_value = self.rank_to_value(str(card))
+            # Aの時も考慮
             self.card_current_score += card_value
+            self.card_current_score_sub += card_value
+            if card_value == 1:
+                self.draw_A_flg = True
+                self.card_current_score_sub += 11
+                continue
 
     def is_score_burst(self, total_score):
         """
@@ -140,10 +160,18 @@ class Dealer(Player):
         super().__init__()
 
     def keep_drawing_card(self, deck):
-        while self.card_current_score < 17:
+        while self.card_current_score < 17 and \
+                self.card_current_score_sub < 17:
             self.draw_card(deck)
             print(f"dealer draw card is : {self.hands[-1]}")
             self.calc_current_score(self.hands)
-            print(f"dealer's total_score : {self.card_current_score}")
-            if self.is_score_burst(self.card_current_score):
+            sub_score = ""
+            if self.draw_A_flg is True:
+                sub_score = \
+                    f", {self.card_current_score_sub}"
+            print(
+                f"dealer's total_score : {self.card_current_score}{sub_score}")
+            if self.is_score_burst(self.card_current_score) and \
+                    self.is_score_burst(
+                    int(self.card_current_score_sub)):
                 print("dealer burst!!!")
