@@ -23,6 +23,15 @@ class Game:
         self.player = role.Player()
         self.dealer = role.Dealer()
 
+    def compare_score(self, score_list):
+        for score in score_list:
+            main_score = 100
+            if score > 21:
+                continue
+            if main_score > score:
+                main_score = score
+        return main_score
+
     def judge_winner(self, dealer, player):
         """
         勝敗判定
@@ -35,19 +44,29 @@ class Game:
             子
         """
 
+        # dealer, player の各スコアで21以下の21に近い方を取得し比較
+        dealer_score_list = [
+            dealer.card_current_score,
+            dealer.card_current_score_sub]
+        dealer_score = self.compare_score(dealer_score_list)
+        player_score_list = [
+            player.card_current_score,
+            player.card_current_score_sub]
+        player_score = self.compare_score(player_score_list)
+
         judge_win = ""
-        if dealer.card_current_score < \
-                player.card_current_score <= 21:
+        if dealer_score < \
+                player_score <= 21:
             # dealer < player <= 21の時、playerの勝利
             judge_win = "player win!"
             player.win_count += 1
-        elif player.card_current_score <= 21 \
-                < dealer.card_current_score:
+        elif player_score <= 21 \
+                < dealer_score:
             # player が21以下、dealerがバーストはplayerの勝利
             judge_win = "player win!"
             player.win_count += 1
-        elif player.card_current_score == dealer.card_current_score \
-                and player.card_current_score <= 21:
+        elif player_score == dealer_score \
+                and player_score <= 21:
             # どちらもバーストせず、同じ数字の場合は引き分け
             judge_win = "---draw---"
         else:
