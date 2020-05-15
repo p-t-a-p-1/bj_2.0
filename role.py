@@ -124,12 +124,17 @@ class Player:
         """
         self.card_current_score = 0
         self.card_current_score_sub = 0
+        self.draw_A_flg = False
         for card in current_hands:
             card_value = self.rank_to_value(str(card))
             # Aの時も考慮
             self.card_current_score += card_value
             self.card_current_score_sub += card_value
             if card_value == 1:
+                # Aが連続した時サブスコアで+12されるため-1しておく
+                if self.draw_A_flg is True:
+                    self.card_current_score_sub -= 1
+                    print(self.card_current_score_sub)
                 self.draw_A_flg = True
                 self.card_current_score_sub += 11
                 continue
@@ -160,7 +165,8 @@ class Dealer(Player):
         super().__init__()
 
     def keep_drawing_card(self, deck):
-        while self.card_current_score < 17 and \
+        self.draw_A_flg = False
+        while self.card_current_score < 17 or \
                 self.card_current_score_sub < 17:
             self.draw_card(deck)
             print(f"dealer draw card is : {self.hands[-1]}")
