@@ -32,6 +32,11 @@ class Game:
         ----------
         score_list : list
             メインスコアとサブスコアのリスト
+
+        Returns
+        --------
+        main_score : int
+            2つのスコアのうち21に近い数字（どちらも21より大きい場合は0）
         """
         main_score = 0
         for score in score_list:
@@ -119,6 +124,25 @@ draw：{draw_count}
 *-*-*-*-*-*-*-*\
 """
 
+    def check_draw_A(self, person):
+        """
+        手札にAがある場合はサブスコアも表示
+
+        Parameters
+        ----------
+        person : object
+            player or dealer
+
+        Returns
+        --------
+        person_sub_score : str
+            サブスコア用文字列（手札にAない場合は空文字）
+        """
+        person_sub_score = ""
+        if person.draw_A_flg is True:
+            person_sub_score = f", {person.card_current_score_sub}"
+        return person_sub_score
+
     def main(self):
         """
         ブラックジャックのメインゲーム関数
@@ -141,18 +165,14 @@ draw：{draw_count}
             # 最初は２枚ずつドロー
             self.player.draw_card(deck, 2)
             self.dealer.draw_card(deck, 2)
+
             # player初期スコア計算
             self.player.calc_current_score(self.player.hands)
-            print(self.player.draw_A_flg)
-            print(self.dealer.draw_A_flg)
-
-            player_sub_score = ""
-            if self.player.draw_A_flg is True:
-                player_sub_score = f", {self.player.card_current_score_sub}"
+            # A引いてる場合はサブスコアも表示
+            player_sub_score = self.check_draw_A(self.player)
 
             # 初期ドロー時のスコア表示（dealer側の1枚は伏せる）
             print("\n--Game Start--\n")
-
             first_msg = f"""\
 dealer's hands : [{self.dealer.hands[0]}, *-*]
 player's hands : {self.player.hands}
@@ -168,11 +188,8 @@ players's total_score : {self.player.card_current_score}{player_sub_score}\
 
             # dealerスコア計算
             self.dealer.calc_current_score(self.dealer.hands)
-            dealer_sub_score = ""
             # A引いてる場合はサブスコアも表示
-            if self.dealer.draw_A_flg is True:
-                dealer_sub_score = f", {self.dealer.card_current_score_sub}"
-
+            dealer_sub_score = self.check_draw_A(self.dealer)
             dealer_msg = f"""\
 dealer's hands : {self.dealer.hands}
 dealer's total_score : {self.dealer.card_current_score}{dealer_sub_score}\
@@ -193,6 +210,7 @@ dealer's total_score : {self.dealer.card_current_score}{dealer_sub_score}\
             if start_res == 'Q':
                 game_flg = False
 
+        # ゲーム回数や勝利回数など計算して表示
         final_score_str = self.display_final_result(
             self.player.win_count, self.dealer.win_count, total_count)
         print(final_score_str)

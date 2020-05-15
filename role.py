@@ -131,13 +131,13 @@ class Player:
             self.card_current_score += card_value
             self.card_current_score_sub += card_value
             if card_value == 1:
-                # Aが連続した時サブスコアで+12されるため-1しておく
                 if self.draw_A_flg is True:
-                    self.card_current_score_sub -= 1
+                    # Aが連続した時サブスコアで2重でサブスコア加算されるので+10(+11-1)
+                    self.card_current_score_sub += 10
                     print(self.card_current_score_sub)
+                    continue
                 self.draw_A_flg = True
                 self.card_current_score_sub += 11
-                continue
 
     def is_score_burst(self, total_score):
         """
@@ -165,6 +165,15 @@ class Dealer(Player):
         super().__init__()
 
     def keep_drawing_card(self, deck):
+        """
+        dealerは17超えるまで自動でカードを引き続ける
+        17超えたら終了
+
+        Parameters
+        ----------
+        deck : object
+            現在の手札
+        """
         self.draw_A_flg = False
         while self.card_current_score < 17 or \
                 self.card_current_score_sub < 17:
