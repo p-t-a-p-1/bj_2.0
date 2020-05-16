@@ -32,6 +32,7 @@ class Card:
         self.mark = card_mark
         self.number = card_number
         self.rank = self.NUMBER_TO_RANK[self.number]
+        self.pair = f"{self.MARKS[self.mark]}-{self.rank}"
 
     def __repr__(self):
         """
@@ -47,7 +48,7 @@ class Card:
         >>> print(card)
         ♦︎4
         """
-        return self.MARKS[self.mark] + '-' + self.rank
+        return self.pair
 
 
 # Cardクラスからインスタンスを生成（引数にマークと数字）

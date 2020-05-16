@@ -1,5 +1,5 @@
 # Cardクラス
-import singlecard
+from deck import singlecard
 # リストの要素をシャッフル
 from random import shuffle
 

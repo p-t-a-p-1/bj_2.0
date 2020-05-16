@@ -1,5 +1,6 @@
-import stock
+from deck import stock
 import role
+from bj import BlackJack
 
 
 class Game:
@@ -124,25 +125,6 @@ draw：{draw_count}
 *-*-*-*-*-*-*-*\
 """
 
-    def check_draw_A(self, person):
-        """
-        手札にAがある場合はサブスコアも表示
-
-        Parameters
-        ----------
-        person : object
-            player or dealer
-
-        Returns
-        --------
-        person_sub_score : str
-            サブスコア用文字列（手札にAない場合は空文字）
-        """
-        person_sub_score = ""
-        if person.draw_A_flg is True:
-            person_sub_score = f", {person.card_current_score_sub}"
-        return person_sub_score
-
     def main(self):
         """
         ブラックジャックのメインゲーム関数
@@ -152,9 +134,9 @@ draw：{draw_count}
         deck = stock.Deck()
 
         total_count = 0
-        game_flg = True
+        can_play_game = True
         # 残りカードが5枚以上の場合
-        while game_flg is True and len(deck.cards) > 5:
+        while can_play_game and len(deck.cards) > 5:
 
             self.player.hands = []
             self.dealer.hands = []
@@ -167,9 +149,9 @@ draw：{draw_count}
             self.dealer.draw_card(deck, 2)
 
             # player初期スコア計算
-            self.player.calc_current_score(self.player.hands)
+            BlackJack.calc_current_score(self.player)
             # A引いてる場合はサブスコアも表示
-            player_sub_score = self.check_draw_A(self.player)
+            player_sub_score = BlackJack.check_draw_A(self.player)
 
             # 初期ドロー時のスコア表示（dealer側の1枚は伏せる）
             print("\n--Game Start--\n")
@@ -187,9 +169,9 @@ players's total_score : {self.player.card_current_score}{player_sub_score}\
             print("\n--Result--\n")
 
             # dealerスコア計算
-            self.dealer.calc_current_score(self.dealer.hands)
+            BlackJack.calc_current_score(self.dealer)
             # A引いてる場合はサブスコアも表示
-            dealer_sub_score = self.check_draw_A(self.dealer)
+            dealer_sub_score = BlackJack.check_draw_A(self.dealer)
             dealer_msg = f"""\
 dealer's hands : {self.dealer.hands}
 dealer's total_score : {self.dealer.card_current_score}{dealer_sub_score}\
@@ -208,7 +190,7 @@ dealer's total_score : {self.dealer.card_current_score}{dealer_sub_score}\
             restart_msg = "Qでゲーム終了、それ以外でゲームスタート："
             start_res = input(restart_msg)
             if start_res == 'Q':
-                game_flg = False
+                can_play_game = False
 
         # ゲーム回数や勝利回数など計算して表示
         final_score_str = self.display_final_result(
